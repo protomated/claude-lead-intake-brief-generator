@@ -1,16 +1,16 @@
 {
   "manifest_version": "0.2",
-  "name": "immigration-filing-drafter",
-  "display_name": "Immigration Filing & Status Update Drafting Skill",
+  "name": "lead-intake-brief-generator",
+  "display_name": "Consult Prep & Lead Triage Brief Generator",
   "version": "1.0.0",
-  "description": "One skill: /immigration-filing. Provide case facts and your firm's own filing templates; the skill drafts narrative filing sections (support letters, cover letters, RFE-response outlines) strictly from what's supplied, and drafts a client status-update email when you report a status change. Assisted draft, always reviewed — never looks up or submits anything to USCIS, never invents a fact, never predicts an outcome, never computes a deadline.",
+  "description": "One skill: /lead-intake-brief. Provide intake notes, an email thread, or uploaded documents; the skill drafts a one-page brief — parties, dates, matter-type suggestion, urgency flag, open questions, recommended next step — strictly from what's supplied. Assisted draft, always reviewed — never accepts, declines, routes, or assigns a lead, never runs a conflict check, never invents a fact, never computes a deadline.",
   "author": {
     "name": "Protomated",
     "url": "https://protomated.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/protomated/claude-immigration-filing-drafter"
+    "url": "https://github.com/protomated/claude-lead-intake-brief-generator"
   },
   "license": "MIT"
 }

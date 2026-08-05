@@ -1,7 +1,7 @@
 {
-  "name": "immigration-filing-drafter",
+  "name": "lead-intake-brief-generator",
   "version": "1.0.0",
-  "description": "Immigration Filing & Status Update Drafting Skill — Claude Desktop plugin that drafts filing narrative sections and client status-update emails from attorney-supplied case facts and the firm's own templates, for solo and small immigration-practice attorneys",
+  "description": "Consult Prep & Lead Triage Brief Generator — Claude Desktop plugin that drafts a one-page intake triage brief from attorney-supplied intake notes, an email thread, or uploaded documents, for solo and small-firm attorneys",
   "private": true,
   "scripts": {
     "validate": "node scripts/validate-plugin.mjs plugin",

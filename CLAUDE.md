@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-**CP11** — Immigration Filing & Status Update Drafting Skill. A Claude Desktop / Cowork plugin for solo and small immigration-practice attorneys. One skill (`/immigration-filing`) drafts filing narrative sections — support letters, cover letters, RFE-response outlines — strictly from attorney-supplied case facts and the firm's own filing templates, and drafts a client status-update email whenever the attorney reports a case-status change. It never looks up a case's status with USCIS, never logs into a USCIS account, and never files, submits, or sends anything itself — every output is a draft for the attorney to review, finalize, and send. There is no runtime code, no MCP server, no connector, and no backend. The product is entirely content: a markdown skill file and a reference doc.
+**CP4** — Consult Prep & Lead Triage Brief Generator. A Claude Desktop / Cowork plugin for solo and small-firm attorneys. One skill (`/lead-intake-brief`) drafts a one-page brief — parties, dates, matter-type suggestion, urgency flag, open questions, recommended next step — strictly from intake notes, an email thread, or uploaded documents the attorney supplies or attaches. It never assesses legal merit or case strength, never runs or claims to run a conflict-of-interest check, never accepts, declines, routes, or assigns a lead, and never contacts the lead itself — every output is a suggestion for the attorney to review and act on. There is no runtime code, no MCP server, no connector, and no backend. The product is entirely content: a markdown skill file and a reference doc.
 
-The leak it plugs: immigration attorneys routinely juggle 50 to 200+ pending cases at once, with clients checking in anxiously on status they can't see for themselves, and the narrative drafting behind every filing — support letters, cover letters, RFE responses, plus the client status-update emails each status change generates — eats hours that don't scale with caseload. Immigration-specific hallucination and sanctions risk is elevated in this practice area (fabricated citations and invented facts have already drawn real sanctions attention), which is exactly why this skill drafts strictly from what the attorney supplies and never writes legal argument, cites law, predicts an outcome, or computes a deadline from its own knowledge — the discipline behind that design mirrors the verified-source grounding rule in the catalog's legal-research-memo skill (see PAC-A-3's governance rationale for this track), applied here to filing narrative drafting instead of case-law research.
+The leak it plugs: firms that respond to an inbound lead within an hour convert significantly more of them than firms that take a day or two, but solo and small firms have no dedicated triage staff, so qualification happens inconsistently, squeezed between everything else on an attorney's desk. This skill turns raw intake material into a scannable brief in the time it takes to read it, so the attorney walks into the consult already oriented. It complements — without depending on or naming at runtime — the catalog's n8n-track AI Intake Qualifier workflow: that's the always-on, automated routing pipeline; this is the on-demand, single-lead, Claude-native version, and it stays a suggestion tool by design — the automated triage-and-route version, with a conflict check and CRM write-back, is explicitly the paid upsell behind this free skill.
 
-Landing page: `protomated.com/templates/immigration-filing-drafter/` (WordPress — managed outside this repo).
+Landing page: `protomated.com/templates/lead-intake-brief-generator/` (WordPress — managed outside this repo).
 
 ## Working a new ticket (this repo is a per-ticket template)
 
@@ -38,9 +38,9 @@ plugin/           The installable plugin (packaged into .zip bundle)
   .mcp.json                    Empty — filesystem access is Cowork's implicit attached-folder model, not a connector
   manifest.json                Plugin display metadata
   prompts/system-prompt.md     Master system prompt — compliance guardrails live here
-  skills/immigration-filing/
+  skills/lead-intake-brief/
     SKILL.md                              The single skill; YAML frontmatter + markdown body
-    reference/filing-drafting-reference.md Narrative-type structure, status-update trigger categories, and the `[NEEDS: ...]` placeholder convention
+    reference/intake-triage-reference.md  Brief-section structure, urgency-flag signal categories, conflict-flag rule, and the `[NEEDS: ...]` placeholder convention
 scripts/
   validate-plugin.mjs          Validates plugin/ structure before packing
 docs/
@@ -73,7 +73,7 @@ npm run tree
 
 ## Plugin format
 
-The bundle format is `.zip`. It uses the **plugin variant** (not standalone) — no bundled MCP server, no connectors. Plugin name: `immigration-filing-drafter`, current version: `1.0.0`.
+The bundle format is `.zip`. It uses the **plugin variant** (not standalone) — no bundled MCP server, no connectors. Plugin name: `lead-intake-brief-generator`, current version: `1.0.0`.
 
 Two manifests serve different purposes:
 - `plugin/.claude-plugin/plugin.json` — the identity manifest the validator and Claude Desktop read (`name` must be kebab-case)
@@ -84,20 +84,19 @@ The validator (`scripts/validate-plugin.mjs`) checks:
 - Each `skills/*/` subdirectory contains a `SKILL.md`
 - `agents/`, `commands/`, `hooks/` (if present) contain files with the expected extension
 
-## Skill: /immigration-filing
+## Skill: /lead-intake-brief
 
-The single skill drafts two kinds of output, always from what the attorney supplies — case facts and, where relevant, the firm's own filing template, typed into chat or attached as a workspace folder:
+The single skill drafts one kind of output — a one-page consult-prep and lead-triage brief — always from what the attorney supplies: intake notes, an email thread, or uploaded documents, typed into chat or attached as a workspace folder:
 
-1. Confirms which output is needed — a filing narrative section (support letter, cover letter, or RFE-response outline) or a client status-update email — unless it's already clear from what was attached or asked.
-2. **Filing narrative section:** if the firm has its own template, populates its structure with supplied case facts rather than redesigning it; if no template is attached, asks whether the firm has one before falling back to a generic structure, and says plainly when it's using a generic one.
-3. Never invents a case fact — a name, date, relationship, or filing-history detail — not present in the attached case folder or chat input; a missing fact is left as an explicit `[NEEDS: ...]` placeholder, and the rest of the section is still drafted around it.
-4. Never writes the persuasive legal argument for a filing, and never cites a statute, regulation, or case law, from its own knowledge — organizes only the facts and evidence supplied into the structure the firm's template calls for; anything requiring legal-authority content beyond what was supplied is left as `[NEEDS: attorney's legal argument/citation]`.
-5. Never calculates or states a specific USCIS filing or response deadline from general processing rules or an RFE's issue date; a deadline appears only when the attorney states that exact date, otherwise it's flagged for the firm's own docketing/calendaring system to confirm.
-6. **Client status-update email:** drafts a plain-English email from a case-status change the attorney reports — never something the skill looks up or infers itself — and never predicts a case outcome or adds legal characterization beyond what was reported.
-7. Never certifies, assesses, or predicts anything about the case's legal merits, strength, or likelihood of success — that judgment stays with the attorney.
-8. Never accesses, logs into, checks the status of, or submits anything to USCIS, and never sends a client email itself — the skill produces chat text only; the attorney or firm staff files and sends everything.
-9. Presents every draft with the compliance header and footer as chat-level text around it — never embedded inside the copyable draft block, since that block is what the attorney copies straight into a USCIS filing package or a client email.
-10. Iterates on corrections and `[NEEDS: ...]` placeholder fill-ins as many times as needed; never marks a draft "final," "ready to file," or "sent" — that's the attorney's own action.
+1. Asks for the intake material if nothing has been supplied yet — a brief needs something to summarize.
+2. Drafts six sections: **Parties**, **Dates**, **Matter-Type Suggestion**, **Urgency Flag**, **Open Questions**, **Recommended Next Step** — see `reference/intake-triage-reference.md` for what each structurally contains.
+3. Never invents a party, date, or case detail not present in the attached intake material or chat input; a missing fact is left as an explicit `[NEEDS: ...]` placeholder, and the rest of the brief is still drafted around it.
+4. Never assesses legal merit, case strength, or eligibility — the matter-type suggestion is a categorization guess for the attorney to confirm, never a legal opinion on whether the case is viable or worth taking.
+5. Never runs or claims to run a conflict-of-interest check — a party that might match an existing client is surfaced in Open Questions as something to check, never resolved as a confirmed conflict or a confirmed absence of one.
+6. Never calculates or states a statute-of-limitations date, filing deadline, or other legally-derived date; the urgency flag reflects only what the intake material states directly, otherwise it's flagged for the attorney or the firm's docketing system to confirm.
+7. Never accepts, declines, routes, or assigns a lead, and never contacts, emails, or responds to the lead itself — the recommended next step is always a suggestion; the attorney or firm staff makes and carries out the actual decision.
+8. Presents every brief with the compliance header and footer as chat-level text around it — never embedded inside the copyable draft block, since that block is what the attorney may paste into a CRM or matter-management note.
+9. Iterates on corrections and `[NEEDS: ...]` placeholder fill-ins as many times as needed; never marks a brief "screened," "qualified," "accepted," or "declined" — that's the attorney's own action.
 
 Each `SKILL.md` has YAML frontmatter:
 ```yaml
@@ -112,23 +111,23 @@ argument-hint: "[hint shown in Claude Desktop]"
 
 These rules are enforced in `prompts/system-prompt.md` and `SKILL.md`. Do not weaken them:
 
-1. **Review gate**: Claude must present every draft with the compliance header and footer as chat-level text around it, never inside the draft block, and never call a draft "final," "ready to file," or "sent" without the attorney's own action.
-2. **No case-outcome prediction**: the skill never predicts whether a case will be approved, denied, or otherwise resolved favorably, and never assesses how strong a case is — neither in a filing narrative nor in a client status-update email.
-3. **No legal argument or citation from model knowledge**: the skill never writes the persuasive legal argument for a filing, and never cites a statute, regulation, or case law, from its own training knowledge. Anything beyond what the firm's template, case folder, or chat input supplied is left as an explicit `[NEEDS: attorney's legal argument/citation]` placeholder — never filled in from general immigration-law knowledge.
-4. **No deadline calculation**: the skill never computes or states a specific USCIS filing or response deadline from general processing rules or an RFE's issue date. A deadline appears in a draft only when the attorney states that exact date; otherwise it's flagged (`[NEEDS: response deadline — confirm with your docketing system]`) for the firm's own docketing system to confirm.
-5. **No USCIS interaction**: the skill never accesses, logs into, checks the case status of, or submits, files, or sends anything to a USCIS account or system, and never sends a client-facing email itself. A status-update email is drafted only from what the attorney or firm staff reports happened.
-6. **No facts invented**: a case fact — name, date, relationship, filing-history detail, evidence description — not present in the attached case folder or chat input is flagged as `[NEEDS: ...]`, never guessed or filled in with a "typical" case detail.
-7. **Ambiguity resolution**: which draft type is needed is confirmed when unclear; a missing firm template is asked about before the skill falls back to a generic structure; a status-update trigger reported without a stated next step is asked about, not assumed.
-8. **Plan-tier warning**: The system prompt must warn that real case data — A-numbers, dates of birth, immigration or persecution history — should only be used on Claude for Work, Claude Team, or Claude Enterprise, or the Claude API under a signed Data Processing Agreement (DPA), never consumer-tier Claude (claude.ai Personal / Pro).
+1. **Review gate**: Claude must present every brief with the compliance header and footer as chat-level text around it, never inside the draft block, and never call a brief "screened," "qualified," "accepted," or "declined" without the attorney's own action.
+2. **No legal-merits or eligibility assessment**: the skill never states or implies that a matter is legally viable, strong, or worth taking. The matter-type suggestion is a categorization guess for the attorney to confirm, never a legal opinion.
+3. **No conflict check**: the skill never runs or claims to run a conflict-of-interest check — that determination is the firm's own process, even if a client list happens to be among the attached files. If a named party might match an existing client, it's flagged in Open Questions as something to check — never resolved as a confirmed conflict or a confirmed absence of one.
+4. **No deadline calculation**: the skill never computes or states a statute-of-limitations date, filing deadline, or other legally-derived date. An urgency signal appears in a brief only when the intake material states it directly (an explicit deadline, the lead's own expressed urgency, a mentioned upcoming date); otherwise it's flagged (`[NEEDS: confirm applicable deadline — attorney/docketing system]`) for the attorney or the firm's docketing system to confirm.
+5. **No intake decision or outbound action**: the skill never accepts, declines, routes, or assigns a lead, and never contacts, emails, or responds to the lead on the firm's behalf. Every recommended next step is a suggestion; the attorney or firm staff makes and carries out the actual decision.
+6. **No facts invented**: a party, date, or case detail not present in the attached intake material or chat input is flagged as `[NEEDS: ...]`, never guessed or filled in with a "typical" detail.
+7. **Ambiguity resolution**: no intake material at all prompts a request for it before drafting anything; a matter type that isn't clear from the intake material gets a hedged suggestion (or a couple of close candidates) instead of a forced single label; a possible conflict is flagged, never resolved.
+8. **Data-handling note**: The system prompt must warn that real prospective-client data — name, contact details, case narrative — should only be used on Claude for Work, Claude Team, or Claude Enterprise, or the Claude API under a signed Data Processing Agreement (DPA), never consumer-tier Claude (claude.ai Personal / Pro).
 
 ## Internal QA fixtures — tests/skills/
 
 `tests/skills/<skill-name>.md` is the internal QA testing guide for a skill — a standing convention for every plugin built in this repo, alongside (not replacing) the end-user testing guide in `plugin/README.md`. The difference:
 
 - `plugin/README.md` — ships inside the plugin zip, short scenarios with pasted one-liners, aimed at an attorney verifying the install.
-- `tests/skills/<skill-name>.md` — internal only, not packaged, uses real attached-folder fixtures under `tests/skills/<skill-name>/` for the case-facts-and-template path, since this skill's primary input is an attached case folder, not a single file to read cold. Deeper checks (e.g., compliance-wrapper placement, the `[NEEDS: ...]` placeholder rule, legal-argument and deadline refusal, outcome-prediction refusal) belong here even when they overlap with `plugin/README.md`'s scenarios.
+- `tests/skills/<skill-name>.md` — internal only, not packaged, uses real attached-folder fixtures under `tests/skills/<skill-name>/` for the intake-material path, since this skill's primary input is intake notes, an email thread, or documents attached as a case folder, not a single file to read cold. Deeper checks (e.g., compliance-wrapper placement, the `[NEEDS: ...]` placeholder rule, legal-merits and conflict-check refusal, deadline-calculation refusal) belong here even when they overlap with `plugin/README.md`'s scenarios.
 
-All fixture data must be clearly synthetic — fictional firms, clients, matter numbers, and A-numbers. Never use real client or matter data, even anonymized real data, without checking with Dele first. This is especially important for this skill: case facts can include A-numbers, dates of birth, and persecution history, so fixture hygiene matters more here than on lower-sensitivity plugins in this catalog.
+All fixture data must be clearly synthetic — fictional firms, clients, and matter details. Never use real client or matter data, even anonymized real data, without checking with Dele first. Intake material can include a prospective client's name, contact details, and case narrative, so fixture hygiene matters here the same way it does across the rest of this catalog.
 
 ## Commit style
 
@@ -138,19 +137,19 @@ Do not include `Co-Authored-By` attribution lines in commit messages.
 
 Used in `plugin/.claude-plugin/plugin.json` and any marketing copy — keep consistent:
 
-> An immigration filing drafting assistant that turns attorney-supplied case facts and the firm's own filing templates into narrative filing sections — support letters, cover letters, RFE-response outlines — and client status-update emails triggered by a reported case-status change. Never looks up or submits anything to USCIS, never invents a case fact, never predicts an outcome, and never computes a deadline; you review and finalize every draft before filing or sending.
+> A consult-prep and lead-triage assistant that turns attorney-supplied intake notes, an email thread, or uploaded documents into a one-page brief — parties, dates, matter-type suggestion, urgency flag, open questions, recommended next step. Suggestion only: never accepts, declines, routes, or assigns a lead, never runs a conflict check, and never computes a deadline; you review and decide before acting on any lead.
 
 ## Testing
 
 Testing is manual inside Claude Desktop / Cowork — there is no test runner. The `plugin/README.md` is the canonical testing guide. It contains:
-- Setup steps (build → install → optionally attach a test case folder → verify skill loads)
+- Setup steps (build → install → optionally attach a test intake folder → verify skill loads)
 - 10 specific test inputs with exact text to paste and what to check for each
 
-Key scenarios that must pass: a filing narrative drafted from a firm template (populates it, doesn't redesign it), no firm template attached (skill asks before falling back to generic), missing facts flagged as `[NEEDS: ...]` rather than invented, a legal-argument section left as a placeholder rather than drafted from the skill's own knowledge, a deadline never computed, a client status-update email that doesn't predict an outcome or add legal characterization, an outcome-prediction request declined, a USCIS-lookup-or-submission request declined, confirmation gate (nothing marked final/filed/sent until the attorney says so), and a revision loop that fills a placeholder without disturbing the rest of the draft.
+Key scenarios that must pass: a full brief drafted from complete intake material (all six sections populated, everything traceable to what was supplied), missing facts flagged as `[NEEDS: ...]` rather than invented, an ambiguous matter type hedged rather than forced into one label, a possible-conflict flag surfaced as an open question rather than resolved, a deadline never computed, a legal-merits-assessment request declined, a conflict-check-performed request declined, an intake-decision-or-outbound-action request declined, confirmation gate (nothing marked screened/accepted/declined until the attorney says so), and a revision loop that fills a placeholder without disturbing the rest of the brief.
 
 ## Notes
 
-- `plugin/.mcp.json` is `{}` — this plugin requires no connector. Drafting runs in chat, with an optional case folder (case facts and the firm's own filing template) attached via Cowork's implicit attached-workspace-folder model, which needs no separate config.
+- `plugin/.mcp.json` is `{}` — this plugin requires no connector. Drafting runs in chat, with optional intake material (notes, an email thread, or documents) attached via Cowork's implicit attached-workspace-folder model, which needs no separate config.
 - `plugin/manifest.json` has no `server` block — the plugin variant does not require one. Do not add one.
 - `plugin/README.md` and `plugin/CONNECTORS.md` are end-user documentation included in the ZIP bundle; they are not internal developer docs.
 - The root `.mcp.json` is gitignored — it holds workspace-level Claude Code MCP credentials and is not part of the plugin artifact.

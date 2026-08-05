@@ -48,7 +48,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create ${{ steps.version.outputs.TAG }} \
-            immigration-filing-drafter-v${{ steps.version.outputs.VERSION }}.zip \
-            immigration-filing-drafter-v${{ steps.version.outputs.VERSION }}.zip.sha256 \
-            --title "Immigration Filing & Status Update Drafting Skill ${{ steps.version.outputs.TAG }}" \
+            lead-intake-brief-generator-v${{ steps.version.outputs.VERSION }}.zip \
+            lead-intake-brief-generator-v${{ steps.version.outputs.VERSION }}.zip.sha256 \
+            --title "Consult Prep & Lead Triage Brief Generator ${{ steps.version.outputs.TAG }}" \
             --notes-file RELEASE.md
