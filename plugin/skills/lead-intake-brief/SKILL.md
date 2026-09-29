@@ -2,6 +2,9 @@
 name: lead-intake-brief
 description: Draft a one-page consult-prep and lead-triage brief — parties, dates, matter-type suggestion, urgency flag, open questions, recommended next step — strictly from attorney-supplied intake notes, an email thread, or uploaded documents. Suggestion only — never accepts, declines, routes, or assigns a lead, never runs a conflict check, and never computes a deadline.
 argument-hint: "[optional: paste intake notes or an email thread, or attach an intake folder — the skill asks for what's missing either way]"
+last_verified: 2026-09-29
+freshness_window: 12 months
+freshness_category: procedural
 ---
 
 # /lead-intake-brief — Consult Prep & Lead Triage Brief Generator

@@ -1,6 +1,6 @@
-# Consult Prep & Lead Triage Brief Generator v1.0.0
+# Consult Prep & Lead Triage Brief Generator v1.0.1
 
-Initial release.
+Adds Legal Builder Hub freshness frontmatter (`freshness_category: procedural`) and removes a leaked internal `.claude/skills/work-pac-ticket` build-automation skill that was accidentally committed to this public repo. No functional changes to the product skill.
 
 ## What's included
 
