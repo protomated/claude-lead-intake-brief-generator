@@ -74,7 +74,7 @@ Does this look right? You can:
 • Ask me to revise a section after you've supplied the missing fact
 • Paste more intake material if there's more to add
 
-— Drafted with Protomated Consult Prep & Lead Triage Brief Generator (Claude Desktop) | Suggestion only — you decide | Not legal advice
+— Drafted with Protomated Consult Prep & Lead Triage Brief Generator | Suggestion only — you decide | Not legal advice
 ```
 
 ---
@@ -105,4 +105,4 @@ Never mark a brief as the firm's intake decision. Never contact, route, or respo
 
 ---
 
-— Drafted with Protomated Consult Prep & Lead Triage Brief Generator (Claude Desktop) | Suggestion only — you decide | Not legal advice
+— Drafted with Protomated Consult Prep & Lead Triage Brief Generator | Suggestion only — you decide | Not legal advice

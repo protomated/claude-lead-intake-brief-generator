@@ -4,6 +4,8 @@ A Claude Desktop / Cowork plugin for solo and small-firm attorneys. One skill (`
 
 **Distributed by [Protomated](https://protomated.com) as a free download.**
 
+**Works with:** Claude Desktop and ChatGPT Desktop.
+
 ---
 
 ## ⚠️ Required: Read This Before You Triage a Real Lead
@@ -53,6 +55,10 @@ If you have intake notes, an email thread, or uploaded documents ready, attach t
 ### Step 3 — Verify
 
 Open a new Claude Desktop chat and type `/skills`. You should see `/lead-intake-brief` listed. Run `/lead-intake-brief` to start.
+
+### Using this in ChatGPT Desktop
+
+This skill also works in ChatGPT Desktop. Install the plugin the same way (Settings → Apps & Connectors → Plugins → Upload plugin archive), then paste your intake notes or email thread directly into the conversation, or attach a file — no persistent folder connector needed.
 
 ---
 

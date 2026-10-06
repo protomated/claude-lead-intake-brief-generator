@@ -1,6 +1,6 @@
 {
   "name": "lead-intake-brief-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Consult Prep & Lead Triage Brief Generator — Claude Desktop plugin that drafts a one-page intake triage brief from attorney-supplied intake notes, an email thread, or uploaded documents, for solo and small-firm attorneys",
   "private": true,
   "scripts": {
